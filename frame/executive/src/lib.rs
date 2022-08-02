@@ -457,9 +457,9 @@ where
 		log::error!("{}\n", name);
 		for item in items.iter() {
 			match item {
-				DigestItem::PreRuntime(_, _) => log::error!("\tpreruntime"),
+				DigestItem::PreRuntime(x, y) => log::error!("\tpreruntime {:?} {:?}", x, y),
 				DigestItem::Consensus(_, _) => log::error!("\tconsensus"),
-				DigestItem::Seal(_, _) => log::error!("\tseal"),
+				DigestItem::Seal(x, y) => log::error!("\tseal {:?} {:?}", x, y),
 				DigestItem::Other(_) => log::error!("\tother"),
 				DigestItem::RuntimeEnvironmentUpdated => log::error!("\truntimeenv"),
 			}
@@ -481,7 +481,7 @@ where
 			new_header.digest().logs().len(),
 			"Number of digest items must match that calculated."
 		);
-		log::error!("Digest equals!");
+		log::error!("Digests equal!");
 		let items_zip = header.digest().logs().iter().zip(new_header.digest().logs().iter());
 		for (header_item, computed_item) in items_zip {
 			header_item.check_equal(computed_item);
@@ -489,15 +489,18 @@ where
 		}
 		log::error!("Digest items equal!");
 
-		// check storage root.
-		let storage_root = new_header.state_root();
-		header.state_root().check_equal(storage_root);
-		assert!(header.state_root() == storage_root, "Storage root must match that calculated.");
-
 		assert!(
 			header.extrinsics_root() == new_header.extrinsics_root(),
 			"Transaction trie root must be valid.",
 		);
+		log::error!("Transaction trie equal!");
+
+		log::error!("Version: {:?}", <frame_system::Pallet<System>>::runtime_version().state_version());
+
+		// check storage root.
+		let storage_root = new_header.state_root();
+		header.state_root().check_equal(storage_root);
+		assert!(header.state_root() == storage_root, "Storage root must match that calculated.");
 	}
 
 	/// Check a given signed transaction for validity. This doesn't execute any
