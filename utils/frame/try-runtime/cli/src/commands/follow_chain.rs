@@ -109,11 +109,12 @@ where
 			let builder = Builder::<Block>::new().mode(Mode::Online(OnlineConfig {
 				transport: command.uri.clone().into(),
 				at: Some(*header.parent_hash()),
+				scrape_children: true,
 				..Default::default()
 			}));
 
 			let new_ext = builder
-				.inject_hashed_key_value(&[(code_key.clone(), code.clone())])
+				// .inject_hashed_key_value(&[(code_key.clone(), code.clone())])
 				.build()
 				.await?;
 			log::info!(
