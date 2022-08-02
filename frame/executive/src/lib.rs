@@ -472,8 +472,8 @@ where
 		// remove temporaries
 		let new_header = <frame_system::Pallet<System>>::finalize();
 
-		log_digest("OLD HEADER", header.digest().logs());
-		log_digest("NEW HEADER", new_header.digest().logs());
+		Self::log_digest("OLD HEADER", header.digest().logs());
+		Self::log_digest("NEW HEADER", new_header.digest().logs());
 
 		// check digest
 		assert_eq!(
