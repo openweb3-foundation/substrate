@@ -125,15 +125,10 @@ use frame_support::{
 	},
 	weights::{DispatchClass, DispatchInfo, GetDispatchInfo},
 };
-use sp_runtime::{
-	generic::Digest,
-	traits::{
-		self, Applyable, CheckEqual, Checkable, Dispatchable, Header, NumberFor, One, Saturating,
-		ValidateUnsigned, Zero,
-	},
-	transaction_validity::{TransactionSource, TransactionValidity},
-	ApplyExtrinsicResult,
-};
+use sp_runtime::{generic::Digest, traits::{
+	self, Applyable, CheckEqual, Checkable, Dispatchable, Header, NumberFor, One, Saturating,
+	ValidateUnsigned, Zero,
+}, transaction_validity::{TransactionSource, TransactionValidity}, ApplyExtrinsicResult, DigestItem};
 use sp_std::{marker::PhantomData, prelude::*};
 
 pub type CheckedOf<E, C> = <E as Checkable<C>>::Checked;
@@ -275,14 +270,16 @@ where
 	pub fn initialize_block(header: &System::Header) {
 		sp_io::init_tracing();
 		sp_tracing::enter_span!(sp_tracing::Level::TRACE, "init_block");
-		let digests = Self::extract_pre_digest(header);
+		let digests = Self::extract_digest(header);
 		Self::initialize_block_impl(header.number(), header.parent_hash(), &digests);
 	}
 
-	fn extract_pre_digest(header: &System::Header) -> Digest {
+	fn extract_digest(header: &System::Header) -> Digest {
 		let mut digest = <Digest>::default();
 		header.digest().logs().iter().for_each(|d| {
 			if d.as_pre_runtime().is_some() {
+				digest.push(d.clone())
+			} else if d.as_seal().is_some() {
 				digest.push(d.clone())
 			}
 		});
@@ -456,10 +453,27 @@ where
 		Ok(r.map(|_| ()).map_err(|e| e.error))
 	}
 
+	fn log_digest(name: &str, items: &[DigestItem]) {
+		sp_tracing::error!("{}\n", name);
+		for item in items.iter() {
+			match item {
+				DigestItem::PreRuntime(_, _) => sp_tracing::error!("\tpreruntime"),
+				DigestItem::Consensus(_, _) => sp_tracing::error!("\tconsensus"),
+				DigestItem::Seal(_, _) => sp_tracing::error!("\tseal"),
+				DigestItem::Other(_) => sp_tracing::error!("\tother"),
+				DigestItem::RuntimeEnvironmentUpdated => sp_tracing::error!("\truntimeenv"),
+			}
+		}
+		sp_tracing::error!("\n");
+	}
+
 	fn final_checks(header: &System::Header) {
 		sp_tracing::enter_span!(sp_tracing::Level::TRACE, "final_checks");
 		// remove temporaries
 		let new_header = <frame_system::Pallet<System>>::finalize();
+
+		log_digest("OLD HEADER", header.digest().logs());
+		log_digest("NEW HEADER", new_header.digest().logs());
 
 		// check digest
 		assert_eq!(

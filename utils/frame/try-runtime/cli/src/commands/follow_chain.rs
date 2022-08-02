@@ -40,6 +40,9 @@ pub struct FollowChainCmd {
 	/// The url to connect to.
 	#[clap(short, long, parse(try_from_str = parse::url))]
 	uri: String,
+
+	#[clap(long)]
+	checking: bool,
 }
 
 pub(crate) async fn follow_chain<Block, ExecDispatch>(
@@ -135,11 +138,19 @@ where
 		let (state_ext, spec_state_version) =
 			maybe_state_ext.as_mut().expect("state_ext either existed or was just created");
 
+		let method = if command.checking {
+			"Core_execute_block"
+		} else {
+			"TryRuntime_execute_block_no_check"
+		};
+
+		println!("Using method {}", method);
+
 		let (mut changes, encoded_result) = state_machine_call_with_proof::<Block, ExecDispatch>(
 			state_ext,
 			&executor,
 			execution,
-			"TryRuntime_execute_block_no_check",
+			method,
 			block.encode().as_ref(),
 			full_extensions(),
 		)?;
