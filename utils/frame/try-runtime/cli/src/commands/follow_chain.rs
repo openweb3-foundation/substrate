@@ -97,10 +97,11 @@ where
 
 		log::debug!(
 			target: LOG_TARGET,
-			"new block event: {:?} => {:?}, extrinsics: {}",
+			"new block event: {:?} => {:?}, extrinsics: {}, storage root: {:?}",
 			hash,
 			number,
-			block.extrinsics().len()
+			block.extrinsics().len(),
+			header.state_root()
 		);
 
 		// create an ext at the state of this block, whatever is the first subscription event.
