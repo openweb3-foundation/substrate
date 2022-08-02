@@ -454,17 +454,17 @@ where
 	}
 
 	fn log_digest(name: &str, items: &[DigestItem]) {
-		sp_tracing::error!("{}\n", name);
+		log::error!("{}\n", name);
 		for item in items.iter() {
 			match item {
-				DigestItem::PreRuntime(_, _) => sp_tracing::error!("\tpreruntime"),
-				DigestItem::Consensus(_, _) => sp_tracing::error!("\tconsensus"),
-				DigestItem::Seal(_, _) => sp_tracing::error!("\tseal"),
-				DigestItem::Other(_) => sp_tracing::error!("\tother"),
-				DigestItem::RuntimeEnvironmentUpdated => sp_tracing::error!("\truntimeenv"),
+				DigestItem::PreRuntime(_, _) => log::error!("\tpreruntime"),
+				DigestItem::Consensus(_, _) => log::error!("\tconsensus"),
+				DigestItem::Seal(_, _) => log::error!("\tseal"),
+				DigestItem::Other(_) => log::error!("\tother"),
+				DigestItem::RuntimeEnvironmentUpdated => log::error!("\truntimeenv"),
 			}
 		}
-		sp_tracing::error!("\n");
+		log::error!("\n");
 	}
 
 	fn final_checks(header: &System::Header) {
@@ -481,11 +481,13 @@ where
 			new_header.digest().logs().len(),
 			"Number of digest items must match that calculated."
 		);
+		log::error!("Digest equals!");
 		let items_zip = header.digest().logs().iter().zip(new_header.digest().logs().iter());
 		for (header_item, computed_item) in items_zip {
 			header_item.check_equal(computed_item);
 			assert!(header_item == computed_item, "Digest item must match that calculated.");
 		}
+		log::error!("Digest items equal!");
 
 		// check storage root.
 		let storage_root = new_header.state_root();

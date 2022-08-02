@@ -24,6 +24,7 @@ sp-io = { version = "6.0.0", default-features = false, path = "../../primitives/
 sp-runtime = { version = "6.0.0", default-features = false, path = "../../primitives/runtime" }
 sp-std = { version = "4.0.0", default-features = false, path = "../../primitives/std" }
 sp-tracing = { version = "5.0.0", default-features = false, path = "../../primitives/tracing" }
+log = { version = "0.4.17", default-features = false }
 
 [dev-dependencies]
 hex-literal = "0.3.4"
