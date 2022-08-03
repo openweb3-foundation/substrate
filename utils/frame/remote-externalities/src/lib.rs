@@ -266,7 +266,7 @@ impl<B: BlockT + DeserializeOwned> Default for Builder<B> {
 			hashed_prefixes: Default::default(),
 			hashed_keys: Default::default(),
 			hashed_blacklist: Default::default(),
-			state_version: StateVersion::V1,
+			state_version: StateVersion::V0,
 		}
 	}
 }
