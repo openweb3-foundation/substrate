@@ -15,10 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::{
-	build_executor, ensure_matching_spec, extract_code, full_extensions, local_spec, parse,
-	state_machine_call_with_proof, SharedParams, LOG_TARGET,
-};
+use crate::{build_executor, ensure_matching_spec, extract_code, full_extensions, local_spec, parse, state_machine_call_with_proof, SharedParams, LOG_TARGET, twox_128};
 use jsonrpsee::{
 	core::client::{Subscription, SubscriptionClientT},
 	ws_client::WsClientBuilder,
@@ -106,12 +103,13 @@ where
 
 		// create an ext at the state of this block, whatever is the first subscription event.
 		if maybe_state_ext.is_none() {
-			let builder = Builder::<Block>::new().mode(Mode::Online(OnlineConfig {
+			let mut builder = Builder::<Block>::new().mode(Mode::Online(OnlineConfig {
 				transport: command.uri.clone().into(),
 				at: Some(*header.parent_hash()),
 				scrape_children: true,
-				..Default::default()
-			}));
+			})).inject_hashed_key(
+					&[twox_128(b"System"), twox_128(b"LastRuntimeUpgrade")].concat(),
+				).inject_default_child_tree_prefix();
 
 			let new_ext = builder
 				// .inject_hashed_key_value(&[(code_key.clone(), code.clone())])
