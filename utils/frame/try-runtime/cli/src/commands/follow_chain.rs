@@ -107,7 +107,7 @@ where
 				transport: command.uri.clone().into(),
 				at: Some(*header.parent_hash()),
 				scrape_children: true,
-				..Default::default(),
+				..Default::default()
 			})).inject_hashed_key(
 					&[twox_128(b"System"), twox_128(b"LastRuntimeUpgrade")].concat(),
 				).inject_default_child_tree_prefix();
