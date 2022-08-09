@@ -156,6 +156,11 @@ where
 		builder.build().await?
 	};
 
+	log::error!("number: {:?}, hash: {:?}", block.header().number(), block.header().hash());
+	log::error!("state root: {:?}", block.header().state_root());
+	log::error!("ext root: {:?}", block.header().extrinsics_root());
+	log::error!("#digests: {:?}", block.header().digest().logs.len());
+
 	// A digest item gets added when the runtime is processing the block, so we need to pop
 	// the last one to be consistent with what a gossiped block would contain.
 	let (mut header, extrinsics) = block.deconstruct();
@@ -171,6 +176,11 @@ where
 		shared.no_spec_name_check,
 	)
 	.await;
+
+	log::error!("number: {:?}, hash: {:?}", block.header().number(), block.header().hash());
+	log::error!("state root: {:?}", block.header().state_root());
+	log::error!("ext root: {:?}", block.header().extrinsics_root());
+	log::error!("#digests: {:?}", block.header().digest().logs.len());
 
 	let _ = state_machine_call_with_proof::<Block, ExecDispatch>(
 		&ext,

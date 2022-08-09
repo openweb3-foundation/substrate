@@ -92,6 +92,11 @@ where
 
 		let block = rpc_api::get_block::<Block, _>(&command.uri, hash).await.unwrap();
 
+		log::error!("number: {:?}, hash: {:?}", block.header().number(), block.header().hash());
+		log::error!("state root: {:?}", block.header().state_root());
+		log::error!("ext root: {:?}", block.header().extrinsics_root());
+		log::error!("#digests: {:?}", block.header().digest().logs.len());
+
 		log::debug!(
 			target: LOG_TARGET,
 			"new block event: {:?} => {:?}, extrinsics: {}, storage root: {:?}",
