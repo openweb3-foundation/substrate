@@ -497,6 +497,8 @@ where
 
 		log::error!("Version: {:?}", <frame_system::Pallet<System>>::runtime_version().state_version());
 
+		log::error!("Old state root: {:?}, New state root: {:?}", header.state_root(), new_header.state_root());
+
 		// check storage root.
 		let storage_root = new_header.state_root();
 		header.state_root().check_equal(storage_root);
