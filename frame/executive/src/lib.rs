@@ -487,12 +487,6 @@ where
 		}
 		log::error!("Digest items equal!");
 
-		assert!(
-			header.extrinsics_root() == new_header.extrinsics_root(),
-			"Transaction trie root must be valid.",
-		);
-		log::error!("Transaction trie equal!");
-
 		log::error!("Version: {:?}", <frame_system::Pallet<System>>::runtime_version().state_version());
 
 		log::error!("Old state root: {:?}, New state root: {:?}", header.state_root(), new_header.state_root());
@@ -503,6 +497,12 @@ where
 		assert!(header.state_root() == storage_root, "Storage root must match that calculated.");
 
 		log::error!("State root equal!");
+
+		assert!(
+			header.extrinsics_root() == new_header.extrinsics_root(),
+			"Transaction trie root must be valid.",
+		);
+		log::error!("Transaction trie equal!");
 	}
 
 	/// Check a given signed transaction for validity. This doesn't execute any
