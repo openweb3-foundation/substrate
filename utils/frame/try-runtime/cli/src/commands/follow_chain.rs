@@ -27,6 +27,7 @@ use sc_service::Configuration;
 use sp_core::H256;
 use sp_runtime::traits::{Block as BlockT, Header, NumberFor};
 use std::{fmt::Debug, str::FromStr};
+use sp_core::storage::StateVersion;
 
 const SUB: &str = "chain_subscribeFinalizedHeads";
 const UN_SUB: &str = "chain_unsubscribeFinalizedHeads";
@@ -40,6 +41,9 @@ pub struct FollowChainCmd {
 
 	#[clap(long)]
 	checking: bool,
+
+	#[clap(long)]
+	state_version: u8,
 }
 
 pub(crate) async fn follow_chain<Block, ExecDispatch>(
@@ -106,9 +110,14 @@ where
 			header.state_root()
 		);
 
+		let state_version = match command.state_version {
+			0 => StateVersion::V0,
+			_ => StateVersion::V1,
+		};
+
 		// create an ext at the state of this block, whatever is the first subscription event.
 		if maybe_state_ext.is_none() {
-			let mut builder = Builder::<Block>::new().mode(Mode::Online(OnlineConfig {
+			let mut builder = Builder::<Block>::new().state_version(state_version).mode(Mode::Online(OnlineConfig {
 				transport: command.uri.clone().into(),
 				at: Some(*header.parent_hash()),
 				..Default::default()
