@@ -150,6 +150,15 @@ where
 			"TryRuntime_execute_block_no_check"
 		};
 
+		let (mut header, extrinsics) = block.deconstruct();
+		header.digest_mut().pop();
+		let block = Block::new(header, extrinsics);
+
+		log::error!("number: {:?}, hash: {:?}", block.header().number(), block.header().hash());
+		log::error!("state root: {:?}", block.header().state_root());
+		log::error!("ext root: {:?}", block.header().extrinsics_root());
+		log::error!("#digests: {:?}", block.header().digest().logs.len());
+
 		println!("Using method {}", method);
 
 		let (mut changes, encoded_result) = state_machine_call_with_proof::<Block, ExecDispatch>(
