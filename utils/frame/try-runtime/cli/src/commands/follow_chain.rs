@@ -170,8 +170,8 @@ where
 			full_extensions(),
 		)?;
 
-		let consumed_weight = <u64 as Decode>::decode(&mut &*encoded_result)
-			.map_err(|e| format!("failed to decode output: {:?}", e))?;
+		let consumed_weight = <u128 as Decode>::decode(&mut &*encoded_result)
+			.map_err(|e| format!("failed to decode weight: {:?}", e))?;
 
 		let storage_changes = changes
 			.drain_storage_changes(
