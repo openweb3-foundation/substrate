@@ -270,16 +270,14 @@ where
 	pub fn initialize_block(header: &System::Header) {
 		sp_io::init_tracing();
 		sp_tracing::enter_span!(sp_tracing::Level::TRACE, "init_block");
-		let digests = Self::extract_digest(header);
+		let digests = Self::extract_pre_digest(header);
 		Self::initialize_block_impl(header.number(), header.parent_hash(), &digests);
 	}
 
-	fn extract_digest(header: &System::Header) -> Digest {
+	fn extract_pre_digest(header: &System::Header) -> Digest {
 		let mut digest = <Digest>::default();
 		header.digest().logs().iter().for_each(|d| {
 			if d.as_pre_runtime().is_some() {
-				digest.push(d.clone())
-			} else if d.as_seal().is_some() {
 				digest.push(d.clone())
 			}
 		});
@@ -503,6 +501,8 @@ where
 		let storage_root = new_header.state_root();
 		header.state_root().check_equal(storage_root);
 		assert!(header.state_root() == storage_root, "Storage root must match that calculated.");
+
+		log::error!("State root equal!");
 	}
 
 	/// Check a given signed transaction for validity. This doesn't execute any
