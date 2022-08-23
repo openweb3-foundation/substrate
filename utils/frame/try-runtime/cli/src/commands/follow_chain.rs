@@ -34,6 +34,7 @@ use serde::de::DeserializeOwned;
 use sp_core::H256;
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
 use std::{collections::VecDeque, fmt::Debug, marker::PhantomData, str::FromStr};
+use sp_version::StateVersion;
 
 const SUB: &str = "chain_subscribeFinalizedHeads";
 const UN_SUB: &str = "chain_unsubscribeFinalizedHeads";
@@ -44,6 +45,9 @@ pub struct FollowChainCmd {
 	/// The url to connect to.
 	#[clap(short, long, parse(try_from_str = parse::url))]
 	uri: String,
+
+	#[clap(long)]
+	state_version: u8,
 }
 
 /// Start listening for with `SUB` at `url`.
@@ -241,7 +245,11 @@ where
 				transport: command.uri.clone().into(),
 				at: Some(*header.parent_hash()),
 				..Default::default()
-			}));
+			}))
+				.state_version(match command.state_version {
+					0 => StateVersion::V0,
+					_ => StateVersion::V1,
+				});
 
 			let new_ext = builder
 				.inject_hashed_key_value(&[(code_key.clone(), code.clone())])
