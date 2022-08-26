@@ -569,7 +569,7 @@ where
 
 	/// Returns the state of the sync of the given peer.
 	///
-	/// Returns `None` if the peer is unknown.
+	/// Returns the best seen block number if we don't have that block yet, `None` otherwise.
 	pub fn peer_info(&self, who: &PeerId) -> Option<PeerInfo<B>> {
 		self.peers
 			.get(who)
@@ -586,7 +586,12 @@ where
 			let middle = best_seens.len() / 2;
 
 			// Not the "perfect median" when we have an even number of peers.
-			Some(*best_seens.select_nth_unstable(middle).1)
+			let median = *best_seens.select_nth_unstable(middle).1;
+			if median > self.best_queued_number {
+				Some(median)
+			} else {
+				None
+			}
 		}
 	}
 
