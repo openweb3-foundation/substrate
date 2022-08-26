@@ -291,8 +291,8 @@ where
 			full_extensions(),
 		)?;
 
-		let consumed_weight = <u64 as Decode>::decode(&mut &*encoded_result)
-			.map_err(|e| format!("failed to decode output: {:?}", e))?;
+		// let consumed_weight = <u64 as Decode>::decode(&mut &*encoded_result)
+		// 	.map_err(|e| format!("failed to decode output: {:?}", e))?;
 
 		let storage_changes = changes
 			.drain_storage_changes(
@@ -314,7 +314,7 @@ where
 			target: LOG_TARGET,
 			"executed block {}, consumed weight {}, new storage root {:?}",
 			number,
-			consumed_weight,
+			0,
 			state_ext.as_backend().root(),
 		);
 	}
