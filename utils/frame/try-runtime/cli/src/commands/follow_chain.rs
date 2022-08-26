@@ -231,10 +231,6 @@ where
 
 		let block = rpc_api::get_block::<Block, _>(&command.uri, hash).await.unwrap();
 
-		let (mut header, extrinsics) = block.deconstruct();
-		header.digest_mut().pop();
-		let block = Block::new(header, extrinsics);
-
 		log::debug!(
 			target: LOG_TARGET,
 			"new block event: {:?} => {:?}, extrinsics: {}",
@@ -281,6 +277,10 @@ where
 
 		let (state_ext, spec_state_version) =
 			maybe_state_ext.as_mut().expect("state_ext either existed or was just created");
+
+		let (mut header, extrinsics) = block.deconstruct();
+		header.digest_mut().pop();
+		let block = Block::new(header, extrinsics);
 
 		let (mut changes, encoded_result) = state_machine_call_with_proof::<Block, ExecDispatch>(
 			state_ext,
