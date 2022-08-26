@@ -278,9 +278,9 @@ where
 		let (state_ext, spec_state_version) =
 			maybe_state_ext.as_mut().expect("state_ext either existed or was just created");
 
-		let (mut header, extrinsics) = block.deconstruct();
-		header.digest_mut().pop();
-		let block = Block::new(header, extrinsics);
+		// let (mut header, extrinsics) = block.deconstruct();
+		// header.digest_mut().pop();
+		// let block = Block::new(header, extrinsics);
 
 		let (mut changes, encoded_result) = state_machine_call_with_proof::<Block, ExecDispatch>(
 			state_ext,

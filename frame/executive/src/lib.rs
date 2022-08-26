@@ -462,11 +462,11 @@ where
 		let new_header = <frame_system::Pallet<System>>::finalize();
 
 		// check digest
-		assert_eq!(
-			header.digest().logs().len(),
-			new_header.digest().logs().len(),
-			"Number of digest items must match that calculated."
-		);
+		// assert_eq!(
+		// 	header.digest().logs().len(),
+		// 	new_header.digest().logs().len(),
+		// 	"Number of digest items must match that calculated."
+		// );
 		let items_zip = header.digest().logs().iter().zip(new_header.digest().logs().iter());
 		for (header_item, computed_item) in items_zip {
 			header_item.check_equal(computed_item);
