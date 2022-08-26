@@ -231,6 +231,10 @@ where
 
 		let block = rpc_api::get_block::<Block, _>(&command.uri, hash).await.unwrap();
 
+		let (mut header, extrinsics) = block.deconstruct();
+		header.digest_mut().pop();
+		let block = Block::new(header, extrinsics);
+
 		log::debug!(
 			target: LOG_TARGET,
 			"new block event: {:?} => {:?}, extrinsics: {}",
