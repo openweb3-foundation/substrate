@@ -282,7 +282,7 @@ where
 			state_ext,
 			&executor,
 			execution,
-			"TryRuntime_execute_block",
+			"Core_execute_block",
 			block.encode().as_ref(),
 			full_extensions(),
 		)?;
