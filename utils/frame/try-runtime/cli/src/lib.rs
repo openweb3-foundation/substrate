@@ -388,6 +388,10 @@ pub struct SharedParams {
 	#[clap(flatten)]
 	pub shared_params: sc_cli::SharedParams,
 
+	/// Path to a wasm blob file containing runtime code to use.
+	#[clap(long)]
+	pub runtime_code_path: PathBuf,
+
 	/// The execution strategy that should be used.
 	#[clap(long, value_name = "STRATEGY", arg_enum, ignore_case = true, default_value = "wasm")]
 	pub execution: ExecutionStrategy,
@@ -588,16 +592,11 @@ impl CliConfiguration for TryRuntimeCmd {
 	}
 }
 
-/// Extract `:code` from the given chain spec and return as `StorageData` along with the
+/// Extract runtime code from the given binary file and return as `StorageData` along with the
 /// corresponding `StorageKey`.
-pub(crate) fn extract_code(spec: &Box<dyn ChainSpec>) -> sc_cli::Result<(StorageKey, StorageData)> {
-	let genesis_storage = spec.build_storage()?;
+pub(crate) fn extract_code(runtime_code_path: &PathBuf) -> sc_cli::Result<(StorageKey, StorageData)> {
 	let code = StorageData(
-		genesis_storage
-			.top
-			.get(well_known_keys::CODE)
-			.expect("code key must exist in genesis storage; qed")
-			.to_vec(),
+		std::fs::read(runtime_code_path).map_err(|e|sc_cli::Error::Io(e))?
 	);
 	let code_key = StorageKey(well_known_keys::CODE.to_vec());
 

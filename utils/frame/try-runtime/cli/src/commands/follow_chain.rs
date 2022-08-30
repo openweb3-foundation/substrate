@@ -70,7 +70,7 @@ where
 	let mut subscription: Subscription<Block::Header> =
 		client.subscribe(SUB, None, UN_SUB).await.unwrap();
 
-	let (code_key, code) = extract_code(&config.chain_spec)?;
+	let (code_key, code) = extract_code(&shared.runtime_code_path)?;
 	let executor = build_executor::<ExecDispatch>(&shared, &config);
 	let execution = shared.execution;
 

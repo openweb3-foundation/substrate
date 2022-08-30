@@ -136,7 +136,7 @@ where
 				"replacing the in-storage :code: with the local code from {}'s chain_spec (your local repo)",
 				config.chain_spec.name(),
 			);
-			let (code_key, code) = extract_code(&config.chain_spec)?;
+			let (code_key, code) = extract_code(&shared.runtime_code_path)?;
 			builder.inject_hashed_key_value(&[(code_key, code)])
 		} else {
 			builder.inject_hashed_key(well_known_keys::CODE)

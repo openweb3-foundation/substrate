@@ -53,7 +53,7 @@ where
 
 	let ext = {
 		let builder = command.state.builder::<Block>()?;
-		let (code_key, code) = extract_code(&config.chain_spec)?;
+		let (code_key, code) = extract_code(&shared.runtime_code_path)?;
 		builder.inject_hashed_key_value(&[(code_key, code)]).build().await?
 	};
 
