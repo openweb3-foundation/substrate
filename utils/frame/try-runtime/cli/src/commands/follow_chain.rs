@@ -40,6 +40,10 @@ pub struct FollowChainCmd {
 	/// The url to connect to.
 	#[clap(short, long, parse(try_from_str = parse::url))]
 	uri: String,
+
+	/// If present, a single connection to a node will be kept and reused for fetching blocks.
+	#[clap(long)]
+	keep_connection: bool,
 }
 
 pub(crate) async fn follow_chain<Block, ExecDispatch>(
@@ -74,7 +78,7 @@ where
 	let executor = build_executor::<ExecDispatch>(&shared, &config);
 	let execution = shared.execution;
 
-	let mut rpc_service = rpc_api::RpcService::new(&command.uri, false);
+	let mut rpc_service = rpc_api::RpcService::new(&command.uri, command.keep_connection);
 
 	loop {
 		let header = match subscription.next().await {
