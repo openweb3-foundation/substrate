@@ -229,6 +229,9 @@ where
 		}
 
 		self.total_deposit = self.total_deposit.saturating_add(&absorbed.total_deposit);
+
+		log::error!(target: "runtime::contracts", "Charging from meter {:?} {:?} {:?} {:?}", origin, contract, absorbed.own_deposit, absorbed.terminated);
+
 		if !absorbed.own_deposit.is_zero() {
 			E::charge(origin, contract, &absorbed.own_deposit, absorbed.terminated);
 		}
@@ -367,6 +370,8 @@ impl<T: Config> Ext<T> for ReservingExt {
 		amount: &DepositOf<T>,
 		terminated: bool,
 	) {
+		log::error!(target: "runtime::contracts", "Account free {:?}", T::Currency::free_balance(origin));
+
 		// There is nothing we can do when this fails as this constitutes a bug in the runtime:
 		// Either the runtime does not hold up the invariant of never deleting a contract's account
 		// or it does not honor reserved balances. We need to settle for emitting an error log
