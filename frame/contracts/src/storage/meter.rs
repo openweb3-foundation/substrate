@@ -386,7 +386,10 @@ impl<T: Config> Ext<T> for ReservingExt {
 					*amount,
 					ExistenceRequirement::KeepAlive,
 				)
-				.and_then(|_| T::Currency::reserve(contract, *amount));
+				.and_then(|_| {
+					log::error!(target: "runtime::contracts", "Transfer succeeded");
+					T::Currency::reserve(contract, *amount)
+				});
 				if let Err(err) = result {
 					log::error!(
 						target: "runtime::contracts",

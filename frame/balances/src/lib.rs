@@ -1463,10 +1463,14 @@ where
 		reasons: WithdrawReasons,
 		new_balance: T::Balance,
 	) -> DispatchResult {
+		log::error!(target: "runtime::contracts", "Withdrawal {:?} {:?} {:?} {:?}", who, amount, reasons, new_balance);
+
 		if amount.is_zero() {
 			return Ok(())
 		}
 		let min_balance = Self::account(who).frozen(reasons.into());
+		log::error!(target: "runtime::contracts", "Min balance {:?}", min_balance);
+
 		ensure!(new_balance >= min_balance, Error::<T, I>::LiquidityRestrictions);
 		Ok(())
 	}
@@ -1479,6 +1483,8 @@ where
 		value: Self::Balance,
 		existence_requirement: ExistenceRequirement,
 	) -> DispatchResult {
+		log::error!(target: "runtime::contracts", "Transfer initiated with {:?} {:?} {:?} {:?}", transactor, dest, value, existence_requirement);
+
 		if value.is_zero() || transactor == dest {
 			return Ok(())
 		}
@@ -1489,10 +1495,14 @@ where
 				Self::try_mutate_account_with_dust(
 					transactor,
 					|from_account, _| -> DispatchResult {
+						log::error!(target: "runtime::contracts", "Free before {:?}", from_account.free);
+
 						from_account.free = from_account
 							.free
 							.checked_sub(&value)
 							.ok_or(Error::<T, I>::InsufficientBalance)?;
+
+						log::error!(target: "runtime::contracts", "Free after {:?}", from_account.free);
 
 						// NOTE: total stake being stored in the same type means that this could
 						// never overflow but better to be safe than sorry.
@@ -1500,7 +1510,11 @@ where
 							to_account.free.checked_add(&value).ok_or(ArithmeticError::Overflow)?;
 
 						let ed = T::ExistentialDeposit::get();
+						log::error!(target: "runtime::contracts", "Existenital deposit {:?}", ed);
+						log::error!(target: "runtime::contracts", "Account total {:?}", to_account.total());
 						ensure!(to_account.total() >= ed, Error::<T, I>::ExistentialDeposit);
+
+						log::error!(target: "runtime::contracts", "Checking withdrawal {:?} {:?} {:?}", transactor, value, from_account.free);
 
 						Self::ensure_can_withdraw(
 							transactor,
@@ -1508,7 +1522,12 @@ where
 							WithdrawReasons::TRANSFER,
 							from_account.free,
 						)
-						.map_err(|_| Error::<T, I>::LiquidityRestrictions)?;
+						.map_err(|_| {
+							log::error!(target: "runtime::contracts", "Couldn't withdraw");
+							Error::<T, I>::LiquidityRestrictions
+						})?;
+
+						log::error!(target: "runtime::contracts", "Could withdraw");
 
 						// TODO: This is over-conservative. There may now be other providers, and
 						// this pallet may not even be a provider.
