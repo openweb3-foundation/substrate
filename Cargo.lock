@@ -83,6 +83,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anes"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4b46cbb362ab8752921c97e041f5e366ee6297bd428a31275b9fcf1e380f7299"
+
+[[package]]
 name = "ansi_term"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -835,6 +841,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "cast"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "37b2a672a2cb129a2e41c10b1224bb368f9f37a2b16b612598138befd7b37eb5"
+
+[[package]]
 name = "cc"
 version = "1.0.71"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -923,6 +935,33 @@ dependencies = [
  "num-traits",
  "time",
  "winapi",
+]
+
+[[package]]
+name = "ciborium"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b0c137568cc60b904a7724001b35ce2630fd00d5d84805fbb608ab89509d788f"
+dependencies = [
+ "ciborium-io",
+ "ciborium-ll",
+ "serde",
+]
+
+[[package]]
+name = "ciborium-io"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "346de753af073cc87b52b2083a506b38ac176a44cfb05497b622e27be899b369"
+
+[[package]]
+name = "ciborium-ll"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "213030a2b5a4e0c0892b6652260cf6ccac84827b83a85a534e178e3906c4cf1b"
+dependencies = [
+ "ciborium-io",
+ "half",
 ]
 
 [[package]]
@@ -1293,16 +1332,15 @@ dependencies = [
 
 [[package]]
 name = "criterion"
-version = "0.3.5"
+version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1604dafd25fba2fe2d5895a9da139f8dc9b319a5fe5354ca137cbbce4e178d10"
+checksum = "b01d6de93b2b6c65e17c634a26653a29d107b3c98c607c765bf38d041531cd8f"
 dependencies = [
  "atty",
- "cast",
+ "cast 0.3.0",
  "clap 2.34.0",
- "criterion-plot",
+ "criterion-plot 0.4.4",
  "csv",
- "futures",
  "itertools",
  "lazy_static",
  "num-traits",
@@ -1312,6 +1350,33 @@ dependencies = [
  "regex",
  "serde",
  "serde_cbor",
+ "serde_derive",
+ "serde_json",
+ "tinytemplate",
+ "walkdir",
+]
+
+[[package]]
+name = "criterion"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e7c76e09c1aae2bc52b3d2f29e13c6572553b30c4aa1b8a49fd70de6412654cb"
+dependencies = [
+ "anes",
+ "atty",
+ "cast 0.3.0",
+ "ciborium",
+ "clap 3.1.18",
+ "criterion-plot 0.5.0",
+ "futures",
+ "itertools",
+ "lazy_static",
+ "num-traits",
+ "oorandom",
+ "plotters",
+ "rayon",
+ "regex",
+ "serde",
  "serde_derive",
  "serde_json",
  "tinytemplate",
@@ -1325,7 +1390,17 @@ version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d00996de9f2f7559f7f4dc286073197f83e92256a59ed395f9aac01fe717da57"
 dependencies = [
- "cast",
+ "cast 0.2.3",
+ "itertools",
+]
+
+[[package]]
+name = "criterion-plot"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6b50826342786a51a89e2da3a28f1c32b06e387201bc2d19791f622c673706b1"
+dependencies = [
+ "cast 0.3.0",
  "itertools",
 ]
 
@@ -2370,7 +2445,7 @@ dependencies = [
 name = "frame-system"
 version = "4.0.0-dev"
 dependencies = [
- "criterion",
+ "criterion 0.4.0",
  "frame-support",
  "log",
  "parity-scale-codec",
@@ -4673,7 +4748,7 @@ dependencies = [
  "async-std",
  "clap 3.1.18",
  "clap_complete",
- "criterion",
+ "criterion 0.4.0",
  "frame-benchmarking-cli",
  "frame-system",
  "frame-system-rpc-runtime-api",
@@ -4754,7 +4829,7 @@ dependencies = [
 name = "node-executor"
 version = "3.0.0-dev"
 dependencies = [
- "criterion",
+ "criterion 0.4.0",
  "frame-benchmarking",
  "frame-support",
  "frame-system",
@@ -7894,7 +7969,7 @@ dependencies = [
 name = "sc-client-db"
 version = "0.10.0-dev"
 dependencies = [
- "criterion",
+ "criterion 0.4.0",
  "hash-db",
  "kitchensink-runtime",
  "kvdb",
@@ -8171,7 +8246,7 @@ dependencies = [
 name = "sc-executor"
 version = "0.10.0-dev"
 dependencies = [
- "criterion",
+ "criterion 0.4.0",
  "env_logger",
  "hex-literal",
  "lazy_static",
@@ -8871,7 +8946,7 @@ dependencies = [
  "ansi_term",
  "atty",
  "chrono",
- "criterion",
+ "criterion 0.4.0",
  "lazy_static",
  "libc",
  "log",
@@ -8910,7 +8985,7 @@ name = "sc-transaction-pool"
 version = "4.0.0-dev"
 dependencies = [
  "assert_matches",
- "criterion",
+ "criterion 0.4.0",
  "futures",
  "futures-timer",
  "hex",
@@ -9432,7 +9507,7 @@ dependencies = [
 name = "sp-api-test"
 version = "2.0.1"
 dependencies = [
- "criterion",
+ "criterion 0.4.0",
  "futures",
  "log",
  "parity-scale-codec",
@@ -9477,7 +9552,7 @@ dependencies = [
 name = "sp-arithmetic"
 version = "5.0.0"
 dependencies = [
- "criterion",
+ "criterion 0.4.0",
  "integer-sqrt",
  "num-traits",
  "parity-scale-codec",
@@ -9654,7 +9729,7 @@ dependencies = [
  "bitflags",
  "blake2-rfc",
  "byteorder",
- "criterion",
+ "criterion 0.4.0",
  "dyn-clonable",
  "ed25519-zebra",
  "futures",
@@ -10176,7 +10251,7 @@ name = "sp-trie"
 version = "6.0.0"
 dependencies = [
  "ahash",
- "criterion",
+ "criterion 0.4.0",
  "hash-db",
  "hashbrown 0.12.3",
  "hex-literal",
@@ -10992,7 +11067,7 @@ version = "0.31.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c5704f0d6130bd83608e4370c19e20c8a6ec03e80363e493d0234efca005265a"
 dependencies = [
- "criterion",
+ "criterion 0.3.6",
  "hash-db",
  "keccak-hasher",
  "memory-db",
