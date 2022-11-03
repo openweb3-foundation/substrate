@@ -90,12 +90,12 @@ impl From<ContractAccessError> for JsonRpseeError {
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct CallRequest<AccountId> {
-	origin: AccountId,
-	dest: AccountId,
-	value: NumberOrHex,
-	gas_limit: NumberOrHex,
-	storage_deposit_limit: Option<NumberOrHex>,
-	input_data: Bytes,
+	pub origin: AccountId,
+	pub dest: AccountId,
+	pub value: NumberOrHex,
+	pub gas_limit: NumberOrHex,
+	pub storage_deposit_limit: Option<NumberOrHex>,
+	pub input_data: Bytes,
 }
 
 /// A struct that encodes RPC parameters required to instantiate a new smart-contract.
