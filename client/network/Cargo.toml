@@ -69,3 +69,6 @@ substrate-test-runtime-client = { version = "2.0.0", path = "../../test-utils/ru
 
 [features]
 default = []
+
+[dependencies.libp2p-swarm-derive]
+version = "=0.30.1"
