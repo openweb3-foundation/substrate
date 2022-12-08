@@ -105,6 +105,7 @@ use crate::{
 	wasm::{OwnerInfo, PrefabWasmModule},
 	weights::WeightInfo,
 };
+pub use gas::ChargedAmount;
 use codec::{Codec, Encode, HasCompact};
 use frame_support::{
 	dispatch::{Dispatchable, GetDispatchInfo, Pays, PostDispatchInfo},
